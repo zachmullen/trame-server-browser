@@ -1,7 +1,9 @@
 <script lang="ts">
 import { Server, ServerSchemes } from "../schema";
+import { ServerForm } from "./";
 
 export default {
+  components: { ServerForm },
   props: {
     servers: {
       type: Array as () => Server[],
@@ -120,11 +122,20 @@ export default {
       </v-col>
       <v-spacer />
       <v-btn class="mr-3" @click="$emit('close')">Close</v-btn>
-      <v-btn color="primary" :disabled="selectedServers.length !== 1">
+      <v-btn
+        @click="$emit('connect', { server: selectedServers[0], timeout })"
+        color="primary"
+        :disabled="selectedServers.length !== 1"
+      >
         <v-icon class="mr-1">mdi-connection</v-icon>
         Connect
       </v-btn>
     </v-toolbar>
+    <v-dialog max-width="900px" v-model="addDialogOpen">
+      <v-card>
+        <server-form />
+      </v-card>
+    </v-dialog>
   </div>
 </template>
 
