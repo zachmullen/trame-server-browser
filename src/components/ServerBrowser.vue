@@ -1,6 +1,6 @@
 <script lang="ts">
 import { Server, ServerSchemes } from "../schema";
-import { ServerForm } from "./";
+import ServerForm from "./ServerForm";
 
 export default {
   components: { ServerForm },
@@ -42,6 +42,10 @@ export default {
     },
     getScheme(server: Server): string {
       return ServerSchemes[server.type];
+    },
+    save(server: Server) {
+      console.log(server);
+      this.addDialogOpen = false;
     },
   },
 };
@@ -132,9 +136,7 @@ export default {
       </v-btn>
     </v-toolbar>
     <v-dialog max-width="900px" v-model="addDialogOpen">
-      <v-card>
-        <server-form />
-      </v-card>
+      <server-form @close="addDialogOpen = false" @save="save" />
     </v-dialog>
   </div>
 </template>
