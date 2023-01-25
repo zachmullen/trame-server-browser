@@ -51,7 +51,7 @@ export default {
         this.$emit("add", server);
         this.currentServer = server;
       } else {
-        this.$emit("update", { old: this.currentServer, new: server });
+        this.$emit("update", this.currentServer, server);
         this.currentServer = null;
       }
     },

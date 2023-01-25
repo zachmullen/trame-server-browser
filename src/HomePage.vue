@@ -14,7 +14,17 @@ export default defineComponent({
     }
 
     function updateServer(oldServer: Server, newServer: Server) {
-      console.log(oldServer, newServer);
+      for (const i in servers) {
+        if (servers[i].name === oldServer.name) {
+          servers[i].name = newServer.name;
+          servers[i].host = newServer.host;
+          servers[i].port = newServer.port;
+          servers[i].type = newServer.type;
+          servers[i].startupCommand = newServer.startupCommand;
+          servers[i].waitTime = newServer.waitTime;
+          break;
+        }
+      }
     }
 
     return {
