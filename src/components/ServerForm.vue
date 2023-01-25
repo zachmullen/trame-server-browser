@@ -1,22 +1,41 @@
 <script lang="ts">
-import { ServerType } from "../schema";
+import { Server, ServerType } from "../schema";
 
 const startupPlaceholder =
   "Execute an external command to start the server. Leave blank to use the default startup configuration.";
 
 export default {
-  props: {},
+  props: {
+    server: {
+      type: Object as () => Server | null,
+      default: null,
+    },
+  },
   data() {
-    return {
+    const server = this.server || {
       name: "",
       host: "",
       port: 11111,
-      serverType: ServerType.ClientServer,
+      type: ServerType.ClientServer,
       startupCommand: "",
       waitTime: 0,
+    };
+    return {
+      ...server,
       serverTypes: Object.values(ServerType),
       startupPlaceholder,
     };
+  },
+  watch: {
+    server() {
+      const server = this.server;
+      this.name = server ? server.name : "";
+      this.host = server ? server.host : "";
+      this.port = server ? server.port : 11111;
+      this.type = server ? server.type : ServerType.ClientServer;
+      this.startupCommand = server ? server.startupCommand : "";
+      this.waitTime = server ? server.waitTime : 0;
+    },
   },
   methods: {
     save() {
@@ -24,7 +43,7 @@ export default {
         name: this.name,
         host: this.host,
         port: this.port,
-        serverType: this.serverType,
+        type: this.type,
         startupCommand: this.startupCommand,
         waitTime: this.waitTime,
       });
@@ -54,7 +73,7 @@ export default {
             outlined
             dense
             hide-details
-            v-model="serverType"
+            v-model="type"
           />
         </v-col>
       </v-row>

@@ -17,7 +17,8 @@ export default {
   data() {
     return {
       addDialogOpen: false,
-      selectedServers: [],
+      selectedServers: [] as Server[],
+      currentServer: null as Server | null,
       headers: [
         {
           text: "Configuration",
@@ -38,14 +39,21 @@ export default {
   },
   methods: {
     editServer(server: Server) {
-      console.log(server);
+      this.currentServer = server;
+      this.addDialogOpen = true;
     },
     getScheme(server: Server): string {
       return ServerSchemes[server.type];
     },
     save(server: Server) {
-      console.log(server);
       this.addDialogOpen = false;
+      if (this.currentServer === null) {
+        this.$emit("add", server);
+        this.currentServer = server;
+      } else {
+        this.$emit("update", { old: this.currentServer, new: server });
+        this.currentServer = null;
+      }
     },
   },
 };
@@ -74,7 +82,15 @@ export default {
         Fetch Servers
       </v-btn>
       <v-spacer />
-      <v-btn @click="addDialogOpen = true" small rounded color="primary">
+      <v-btn
+        @click="
+          currentServer = null;
+          addDialogOpen = true;
+        "
+        small
+        rounded
+        color="primary"
+      >
         <v-icon small class="mr-1">mdi-plus-circle</v-icon>
         Add Server
       </v-btn>
@@ -136,7 +152,11 @@ export default {
       </v-btn>
     </v-toolbar>
     <v-dialog max-width="900px" v-model="addDialogOpen">
-      <server-form @close="addDialogOpen = false" @save="save" />
+      <server-form
+        :server="currentServer"
+        @close="addDialogOpen = false"
+        @save="save"
+      />
     </v-dialog>
   </div>
 </template>

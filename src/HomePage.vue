@@ -1,23 +1,26 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import { defineComponent, reactive } from "vue";
 import { ServerBrowser } from "./components";
-import { ServerType } from "./schema";
+import { Server } from "./schema";
 
 export default defineComponent({
   name: "HomePage",
   components: { ServerBrowser },
   setup() {
+    const servers = reactive<Server[]>([]);
+
+    function addServer(server: Server) {
+      servers.push(server);
+    }
+
+    function updateServer(oldServer: Server, newServer: Server) {
+      console.log(oldServer, newServer);
+    }
+
     return {
-      servers: [
-        {
-          name: "My ParaView server",
-          host: "paraview.org",
-          port: 1111,
-          type: ServerType.ClientServer,
-          waitTime: 0,
-          startupCommand: "",
-        },
-      ],
+      servers,
+      addServer,
+      updateServer,
     };
   },
 });
@@ -26,7 +29,11 @@ export default defineComponent({
 <template>
   <div id="app">
     <v-app>
-      <server-browser :servers="servers" />
+      <server-browser
+        :servers="servers"
+        @add="addServer"
+        @update="updateServer"
+      />
     </v-app>
   </div>
 </template>
